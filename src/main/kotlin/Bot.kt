@@ -42,22 +42,17 @@ fun main() {
 
 private fun detektWindow(windowName: String): Rectangle {
     val user32 = MyUser32.instance
-    val rect = Rectangle(0, 0, 0, 0)
-    var windowTitle = ""
-
-    val windows = WindowUtils.getAllWindows(true)
-    windows.forEach {
-        if (it.title.contains(windowName)) {
-            rect.setRect(it.locAndSize)
-            windowTitle = it.title
+    return WindowUtils.getAllWindows(true)
+        .filter { it.title.contains(windowName) }
+        .takeLast(1)
+        .onEach {
+            user32.FindWindow(null, it.title)?.also { hwnd ->
+                user32.ShowWindow(hwnd, User32.SW_SHOW)
+                user32.SetForegroundWindow(hwnd)
+            }
         }
-    }
-
-    val tst: WinDef.HWND = user32.FindWindow(null, windowTitle)
-    user32.ShowWindow(tst, User32.SW_SHOW)
-    user32.SetForegroundWindow(tst)
-
-    return rect
+        .map { it.locAndSize.bounds }
+        .firstOrNull() ?: Rectangle(0, 0, 0, 0)
 }
 
 private fun ifTargetSelectedAndHasHp(rectangle: Rectangle): Boolean {
