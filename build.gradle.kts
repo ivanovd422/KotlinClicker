@@ -12,8 +12,8 @@ repositories {
 }
 
 dependencies {
-    implementation(files("lib/jna-5.12.1.jar"))
-    implementation(files("lib/jna-platform-5.12.1.jar"))
+    implementation("net.java.dev.jna:jna:5.12.1")
+    implementation("net.java.dev.jna:jna-platform:5.12.1")
     implementation(files("lib/opencv-460.jar"))
 }
 
